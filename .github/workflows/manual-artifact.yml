@@ -1,10 +1,11 @@
-name: check-does-build
+name: manual-artifact
 
-on: [push, pull_request]
+on: [ workflow_dispatch ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 强制所有 Actions 运行在 Node.js 24 上，消除弃用警告
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -20,19 +21,16 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: false
+          cache-cleanup: always
 
       - name: Gradle build
         run: ./gradlew build
 
-      # 👇 下面是上面给你的最终版
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v7.0.1
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
           name: voxy-artifacts
           path: build/libs/*.jar
-          if-no-files-found: error
-          retention-days: 30
-          compression-level: 6
-          overwrite: true
-          include-hidden-files: false
-          archive: true
+          # ❌ 删掉了无效的 archive: false 参数
