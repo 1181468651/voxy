@@ -6,6 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
+      # 强制所有 Actions 运行在 Node.js 24
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
